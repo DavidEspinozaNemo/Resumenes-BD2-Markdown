@@ -37,8 +37,6 @@ Una tubería de análisis típica tiene las siguientes etapas:
 3. Procesar los datos
 4. Analiza y visualiza los datos
 
-![Estructura de análisis](AWS-arquitectura.png)
-
 ## Opciones de Tecnología de Almacenamiento de Datos
 
 ### Bases de Datos Orientadas a filas
