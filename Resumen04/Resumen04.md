@@ -58,3 +58,21 @@ Para brindar durabilidad y alta disponibilidad, el motor de la base de datos de 
 El esquema de un documento describe la estructura y el sistema de tipos del documento independientemente de la instancia del documento. No existe un estándar de esquema ampliamente adoptado para JSON.
 
 DocumentDB aprovecha la simplicidad de JSON y su falta de especificación de esquema. No hace suposiciones sobre los documentos y permite que los documentos dentro de una colección de DocumentDB varíen en el esquema, además de los valores específicos de la instancia. A diferencia de otras bases de datos de documentos, el motor de base de datos de DocumentDB funciona directamente en el nivel de la gramática JSON, siendo independiente del concepto de un esquema de documento y desdibujando el límite entre la estructura y los valores de instancia de los documentos. Esto, a su vez, le permite indexar documentos automáticamente sin necesidad de esquemas o índices secundarios.
+
+### Documentos como árboles
+
+La representación de documentos JSON como árboles a su vez normaliza tanto la estructura como los valores de instancia en los documentos en un concepto unificador de una estructura de ruta codificada dinámicamente. Para representar un documento JSON como un árbol, cada etiqueta (incluidos los índices de matriz) en un documento JSON se convierte en un nodo del árbol. Tanto los nombres de propiedad como sus valores en un documento JSON se tratan de manera homogénea, como etiquetas en la representación de árbol. Creamos un (pseudo) nodo raíz que genera el resto de los nodos (reales) correspondientes a las etiquetas en el documento debajo.
+
+### Índice como documento
+
+Con la indexación automática, se indexa cada ruta en un árbol de documentos. Cada actualización de un documento a una colección DocumentDB conduce a la actualización de la estructura del índice (es decir, provoca la adición o eliminación de nodos).
+
+Hay dos asignaciones posibles del documento y las rutas: asignación de índice hacia adelante, que mantiene un mapa de tuplas (id del documento, ruta) y asignación de índice invertido, que mantiene un mapa de tuplas (ruta, id del documento).
+
+### DocumentDB Queries
+
+El lenguaje de consulta proporcionara proyecciones y filtros relacionales, consultas espaciales, navegación jerárquica entre documentos e invocación de UDF escritos completamente en JavaScript.
+
+Tanto las consultas de SQL como las de JavaScript se traducen a un lenguaje de consulta intermedio interno llamado DocumentDB Query IL. Query IL admite proyecciones, filtros, agregados, clasificación, operadores planos, expresiones (aritméticas, lógicas y diversas transformaciones de datos), funciones intrínsecas proporcionadas por el sistema y funciones definidas por el usuario (UDF).
+
+Query IL está diseñado para explotar la integración del lenguaje JSON y JavaScript dentro del motor de base de datos de DocumentDB, tiene su raíz en el sistema de tipos JavaScript, sigue la semántica del lenguaje JavaScript para la evaluación de expresiones y la invocación de funciones y está diseñado para ser un objetivo de traducción desde múltiples interfaces de lenguaje de consulta (actualmente, SQL y JavaScript).
